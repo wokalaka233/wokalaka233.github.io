@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>多功能趣味网站</title>
+    <title>Toolbox</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +19,7 @@
             overflow-x: hidden;
         }
 
-        /* 导航栏样式 */
+        /* 导航栏样式 + 动画 */
         .navbar {
             position: fixed;
             left: 0;
@@ -32,18 +32,21 @@
             display: flex;
             flex-direction: column;
             z-index: 100;
+            transition: transform 0.3s ease;
         }
 
         .navbar-logo {
             text-align: center;
             margin-bottom: 50px;
             padding: 0 20px;
+            animation: fadeInDown 1s ease;
         }
 
         .navbar-logo h2 {
             font-size: 24px;
             color: #667eea;
             margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .navbar-logo p {
@@ -58,7 +61,14 @@
 
         .nav-item {
             margin: 15px 0;
+            opacity: 0;
+            animation: fadeInLeft 0.5s ease forwards;
         }
+
+        .nav-item:nth-child(1) { animation-delay: 0.2s; }
+        .nav-item:nth-child(2) { animation-delay: 0.4s; }
+        .nav-item:nth-child(3) { animation-delay: 0.6s; }
+        .nav-item:nth-child(4) { animation-delay: 0.8s; }
 
         .nav-link {
             display: block;
@@ -69,6 +79,18 @@
             font-weight: 500;
             transition: all 0.3s ease;
             border-left: 3px solid transparent;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            left: 30px;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background: #667eea;
+            transition: width 0.3s ease;
         }
 
         .nav-link:hover, .nav-link.active {
@@ -76,6 +98,10 @@
             background: rgba(102, 126, 234, 0.1);
             border-left: 3px solid #667eea;
             padding-left: 35px;
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 40%;
         }
 
         /* 主内容区样式 */
@@ -86,6 +112,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            animation: fadeIn 1s ease;
         }
 
         .section {
@@ -96,22 +123,53 @@
             width: 100%;
             max-width: 800px;
             display: none;
-            animation: fadeIn 0.5s ease;
+            animation: slideUp 0.6s ease forwards;
+            transform: translateY(30px);
+            opacity: 0;
         }
 
         .section.active {
             display: block;
         }
 
+        /* 动画定义（初代风格：简洁平滑） */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
         /* 自我介绍板块 */
         .intro-header {
             text-align: center;
             margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease;
         }
 
         .intro-header h2 {
@@ -130,12 +188,20 @@
             background: linear-gradient(90deg, #667eea, #764ba2);
             border-radius: 2px;
             margin: 10px auto 0;
+            animation: grow 1.2s ease;
+        }
+
+        @keyframes grow {
+            from { width: 0; }
+            to { width: 80px; }
         }
 
         .intro-content {
             line-height: 1.8;
             font-size: 16px;
             color: #555;
+            animation: fadeIn 1s ease 0.3s forwards;
+            opacity: 0;
         }
 
         .intro-content p {
@@ -147,6 +213,8 @@
             flex-wrap: wrap;
             gap: 20px;
             margin-top: 30px;
+            animation: fadeIn 1s ease 0.6s forwards;
+            opacity: 0;
         }
 
         .highlight-card {
@@ -156,12 +224,13 @@
             background: rgba(102, 126, 234, 0.05);
             border-radius: 12px;
             border: 1px solid #eee;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .highlight-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            animation: pulse 0.6s ease;
         }
 
         .highlight-card h3 {
@@ -176,10 +245,11 @@
             margin-bottom: 0;
         }
 
-        /* BMI计算器（带姓名版，保留原始样式和逻辑） */
+        /* BMI计算器样式 + 动画 */
         .bmi-header {
             text-align: center;
             margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease;
         }
 
         .bmi-header h2 {
@@ -191,16 +261,36 @@
             max-width: 500px;
             margin: 0 auto;
             padding: 20px;
+            animation: fadeIn 1s ease 0.3s forwards;
+            opacity: 0;
         }
 
         .input-box {
             margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .input-box label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
         }
 
         .bmi-container input {
             padding: 8px;
             width: 200px;
             font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .bmi-container input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
         }
 
         .bmi-container button {
@@ -211,6 +301,14 @@
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .bmi-container button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(72, 187, 120, 0.2);
         }
 
         #bmi-result {
@@ -218,12 +316,21 @@
             padding: 15px;
             border-radius: 5px;
             font-size: 18px;
+            transition: all 0.3s ease;
+            opacity: 0;
         }
 
-        /* 俄罗斯方块板块 */
+        #bmi-result.show {
+            opacity: 1;
+            transform: translateY(0);
+            animation: slideUp 0.5s ease;
+        }
+
+        /* 俄罗斯方块板块样式（手机端适配+网格线+动画） */
         .tetris-header {
             text-align: center;
             margin-bottom: 20px;
+            animation: fadeInDown 0.8s ease;
         }
 
         .tetris-header h2 {
@@ -237,15 +344,34 @@
             align-items: flex-start;
             gap: 30px;
             flex-wrap: wrap;
+            width: 100%;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease 0.3s forwards;
+            opacity: 0;
+        }
+
+        .tetris-main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         #tetris-board {
             border: 3px solid #667eea;
             border-radius: 8px;
             background: #f8f9fa;
+            max-width: 90vw;
+            height: auto;
+            aspect-ratio: 300/600;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
+            transition: all 0.3s ease;
         }
 
-        .tetris-sidebar {
+        #tetris-board:hover {
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .tetris-sidebar-pc {
             display: flex;
             flex-direction: column;
             gap: 20px;
@@ -257,6 +383,12 @@
             background: rgba(102, 126, 234, 0.05);
             border-radius: 8px;
             text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tetris-info:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
         .tetris-info h3 {
@@ -268,15 +400,21 @@
         .tetris-info p {
             font-size: 24px;
             font-weight: 600;
+            color: #333;
+            transition: all 0.3s ease;
         }
 
-        .tetris-controls {
+        .tetris-info p.update {
+            animation: shake 0.3s ease;
+        }
+
+        .tetris-controls-pc {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
 
-        .tetris-btn {
+        .tetris-btn-pc {
             padding: 10px;
             background: linear-gradient(90deg, #667eea, #764ba2);
             color: white;
@@ -284,10 +422,17 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
+            transition: all 0.3s ease;
         }
 
-        .tetris-btn:hover {
+        .tetris-btn-pc:hover {
             opacity: 0.9;
+            transform: scale(1.03);
+            box-shadow: 0 3px 8px rgba(102, 126, 234, 0.2);
+        }
+
+        .tetris-btn-pc:active {
+            transform: scale(0.98);
         }
 
         .controls-tip {
@@ -297,10 +442,61 @@
             text-align: center;
         }
 
-        /* 音乐下载板块 */
+        /* 手机端专属样式 */
+        .tetris-info-mobile {
+            display: none;
+            flex-direction: row;
+            gap: 20px;
+            margin-top: 15px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .tetris-controls-mobile {
+            display: none;
+            margin-top: 20px;
+            width: 100%;
+            animation: fadeIn 1s ease 0.6s forwards;
+            opacity: 0;
+        }
+
+        .control-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .tetris-btn-mobile {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .tetris-btn-mobile:hover {
+            transform: scale(1.08);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .tetris-btn-mobile:active {
+            transform: scale(0.95);
+        }
+
+        /* 音乐下载板块样式 + 动画 */
         .music-header {
             text-align: center;
             margin-bottom: 30px;
+            animation: fadeInDown 0.8s ease;
         }
 
         .music-header h2 {
@@ -312,17 +508,37 @@
             font-family: Arial, Helvetica, sans-serif;
             margin: 40px;
             text-align: center;
+            animation: fadeIn 1s ease 0.3s forwards;
+            opacity: 0;
         }
 
         .music-container button {
             margin: 10px;
             padding: 8px 18px;
             font-size: 16px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .music-container button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
         }
 
         .music-container audio {
             width: 80%;
             margin-top: 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .music-container audio:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
         }
 
         /* 响应式适配 */
@@ -359,6 +575,10 @@
                 font-size: 14px;
             }
 
+            .nav-link:hover, .nav-link.active {
+                padding-left: 15px;
+            }
+
             .main-content {
                 margin-left: 0;
                 margin-top: 80px;
@@ -372,23 +592,43 @@
             .tetris-container {
                 flex-direction: column;
                 align-items: center;
+                gap: 15px;
+            }
+
+            .tetris-sidebar-pc {
+                display: none;
+            }
+
+            .tetris-info-mobile {
+                display: flex;
+            }
+
+            .tetris-controls-mobile {
+                display: block;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .tetris-info-mobile,
+            .tetris-controls-mobile {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
-    <!-- 侧边导航栏（已删除基础版BMI入口） -->
+    <!-- 侧边导航栏 -->
     <nav class="navbar">
         <div class="navbar-logo">
-            <h2>趣味工具箱</h2>
-            <p>实用+娱乐两不误</p>
+            <h2>wpf的工具箱</h2>
+            <p>小小工具</p>
         </div>
         <ul class="nav-list">
             <li class="nav-item">
                 <a href="#intro" class="nav-link active" onclick="switchSection('intro')">关于我</a>
             </li>
             <li class="nav-item">
-                <a href="#bmi" class="nav-link" onclick="switchSection('bmi')">BMI计算器（带姓名）</a>
+                <a href="#bmi" class="nav-link" onclick="switchSection('bmi')">BMI计算器</a>
             </li>
             <li class="nav-item">
                 <a href="#tetris" class="nav-link" onclick="switchSection('tetris')">俄罗斯方块</a>
@@ -407,21 +647,21 @@
                 <h2>关于这个网站</h2>
             </div>
             <div class="intro-content">
-                <p>大家好我是wpf！这是一个有许多小功能的网站，目前主要包含四个核心板块：</p>
-                <p>1. 偷得忙中一点闲；</p>
+                <p>大家好我是王鹏飞！这是一个有许多小工具的网站，目前包含三个核心板块：</p>
+                <p>1. 这里是wokalaka ！（后续功能敬请期待）；</p>
                 <p>2. BMI计算器：计算并反馈详细BMI状态；</p>
-                <p>3. 俄罗斯方块：经典怀旧游戏，电脑端支持键盘操作；</p>
-                <p>4. 音乐下载+播放：提供在线音乐播放和本地下载功能，支持主流格式。</p>
+                <p>3. 俄罗斯方块：经典怀旧游戏，支持键盘操作，目前已适配手机；</p>
+                <p>4. 音乐下载+播放：提供在线音乐播放和本地下载功能，支持主流格式（目前因版权问题不能使用 等我努力 sorry~）</p>
                 <p>网站采用简洁美观的设计风格，适配电脑和手机等多种设备，希望能给你带来便捷又有趣的使用体验～</p>
             </div>
             <div class="intro-highlights">
                 <div class="highlight-card">
-                    <h3>BMI计算器</h3>
-                    <p>计算并反馈详细BMI状态</p>
+                    <h3>个性化BMI工具</h3>
+                    <p>国际通用的衡量人体胖瘦程度与健康状况的标准。快来测一测吧！</p>
                 </div>
                 <div class="highlight-card">
                     <h3>趣味游戏</h3>
-                    <p>经典俄罗斯方块，经典怀旧游戏，电脑端支持键盘操作</p>
+                    <p>经典俄罗斯方块，电脑可使用键盘操作！</p>
                 </div>
                 <div class="highlight-card">
                     <h3>音乐娱乐</h3>
@@ -430,57 +670,81 @@
             </div>
         </section>
 
-        <!-- BMI计算器（带姓名版，完全保留原始逻辑） -->
+        <!-- BMI计算器（带姓名版，已修正18.50-18.60判定） -->
         <section id="bmi" class="section">
             <div class="bmi-header">
-                <h2>BMI计算器（带姓名）</h2>
+                <h2>BMI计算器</h2>
             </div>
             <div class="bmi-container">
                 <h1>欢迎使用BMI计算器</h1>
                 <div class="input-box">
                     <label>请输入你的名字：</label><br>
-                    <input type="text" id="name" placeholder="例如：张三">
+                    <input type="text" id="name" placeholder="例如：雨淳">
                 </div>
                 <div class="input-box">
                     <label>请输入你的体重(kg)：</label><br>
-                    <input type="number" id="weight" step="0.1" placeholder="例如：60">
+                    <input type="number" id="weight" step="0.1" placeholder="例如：90">
                 </div>
                 <div class="input-box">
                     <label>请输入你的身高(m)：</label><br>
-                    <input type="number" id="height" step="0.01" placeholder="例如：1.75">
+                    <input type="number" id="height" step="0.01" placeholder="例如：1.75一定要确定单位m">
                 </div>
                 <button onclick="calculateBMI()">计算BMI</button>
                 <div id="bmi-result"></div>
             </div>
         </section>
 
-        <!-- 俄罗斯方块板块 -->
+        <!-- 俄罗斯方块板块（手机端适配+网格线） -->
         <section id="tetris" class="section">
             <div class="tetris-header">
                 <h2>经典俄罗斯方块</h2>
             </div>
             <div class="tetris-container">
-                <canvas id="tetris-board" width="300" height="600"></canvas>
-                <div class="tetris-sidebar">
+                <div class="tetris-main">
+                    <canvas id="tetris-board" width="300" height="600"></canvas>
+                    <div class="tetris-info-mobile">
+                        <div class="tetris-info">
+                            <h3>分数</h3>
+                            <p id="score-mobile">0</p>
+                        </div>
+                        <div class="tetris-info">
+                            <h3>等级</h3>
+                            <p id="level-mobile">1</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="tetris-sidebar-pc">
                     <div class="tetris-info">
                         <h3>分数</h3>
-                        <p id="score">0</p>
+                        <p id="score-pc">0</p>
                     </div>
                     <div class="tetris-info">
                         <h3>等级</h3>
-                        <p id="level">1</p>
+                        <p id="level-pc">1</p>
                     </div>
-                    <div class="tetris-controls">
-                        <button class="tetris-btn" onclick="moveLeft()">← 左移</button>
-                        <button class="tetris-btn" onclick="moveRight()">→ 右移</button>
-                        <button class="tetris-btn" onclick="rotate()">↑ 旋转</button>
-                        <button class="tetris-btn" onclick="moveDown()">↓ 下移</button>
-                        <button class="tetris-btn" onclick="startGame()">开始游戏</button>
-                        <button class="tetris-btn" onclick="pauseGame()">暂停/继续</button>
+                    <div class="tetris-controls-pc">
+                        <button class="tetris-btn-pc" onclick="moveLeft()">← 左移</button>
+                        <button class="tetris-btn-pc" onclick="moveRight()">→ 右移</button>
+                        <button class="tetris-btn-pc" onclick="rotate()">↑ 旋转</button>
+                        <button class="tetris-btn-pc" onclick="moveDown()">↓ 下移</button>
+                        <button class="tetris-btn-pc" onclick="startGame()">开始游戏</button>
+                        <button class="tetris-btn-pc" onclick="pauseGame()">暂停/继续</button>
                     </div>
                     <div class="controls-tip">
                         支持键盘操作：↑旋转 ←→移动 ↓下移 空格快速下落
                     </div>
+                </div>
+            </div>
+            <div class="tetris-controls-mobile">
+                <div class="control-row">
+                    <button class="tetris-btn-mobile" onclick="moveLeft()">←</button>
+                    <button class="tetris-btn-mobile" onclick="rotate()">↑</button>
+                    <button class="tetris-btn-mobile" onclick="moveRight()">→</button>
+                </div>
+                <div class="control-row">
+                    <button class="tetris-btn-mobile" onclick="startGame()">开始</button>
+                    <button class="tetris-btn-mobile" onclick="moveDown()">↓</button>
+                    <button class="tetris-btn-mobile" onclick="pauseGame()">暂停</button>
                 </div>
             </div>
         </section>
@@ -493,72 +757,103 @@
             <div class="music-container">
                 <h2>1. 点“下载音乐”会把文件落到本地</h2>
                 <button id="btnDl">下载音乐</button>
-
                 <h2>2. 在线播放（支持换源）</h2>
                 <audio id="player" controls></audio>
             </div>
         </section>
     </div>
 
-    <!-- 所有功能的核心脚本 -->
     <script>
         // 1. 板块切换功能
         function switchSection(sectionId) {
-            // 隐藏所有板块
             document.querySelectorAll('.section').forEach(section => {
                 section.classList.remove('active');
             });
-            // 移除所有导航激活状态
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('active');
             });
-            // 显示目标板块
-            document.getElementById(sectionId).classList.add('active');
-            // 激活目标导航
+            const targetSection = document.getElementById(sectionId);
+            targetSection.classList.add('active');
             document.querySelector(`.nav-link[href="#${sectionId}"]`).classList.add('active');
+            
+            // 板块切换动画重置
+            targetSection.style.opacity = '0';
+            targetSection.style.transform = 'translateY(30px)';
+            setTimeout(() => {
+                targetSection.style.opacity = '1';
+                targetSection.style.transform = 'translateY(0)';
+            }, 50);
         }
 
-        // 2. BMI计算器（带姓名）核心逻辑（完全保留原始代码）
+        // 2. BMI计算器（带姓名版，修正18.50-18.60判定）
         function calculateBMI() {
             const name = document.getElementById("name").value;
             const weight = parseFloat(document.getElementById("weight").value);
             const height = parseFloat(document.getElementById("height").value);
-            // 简单判断输入是否正确
-            if (!name || isNaN(weight) || isNaN(height) || height <= 0) {
-                document.getElementById("bmi-result").textContent = "请输入正确的信息哦！";
+            const resultEl = document.getElementById("bmi-result");
+            
+            // 输入验证
+            if (!name || isNaN(weight) || isNaN(height) || height <= 0 || weight <= 0) {
+                resultEl.textContent = "请输入正确的信息哦！";
+                resultEl.className = "show";
+                resultEl.style.background = "rgba(239, 68, 68, 0.1)";
+                resultEl.style.color = "#ef4444";
                 return;
             }
-            // BMI计算逻辑
+            
+            // 计算BMI
             const bmi = weight / (height ** 2);
             const bmiRounded = bmi.toFixed(2);
-            let status;
+            let status, bgColor, textColor;
+            
+            // 修正判定逻辑：18.5（含）以下过轻，18.5-25（含）正常（覆盖18.50-18.60）
             if (bmi < 18.5) {
                 status = "您属于过轻";
-            } else if (bmi >= 18.6 && bmi <= 25) {
+                bgColor = "rgba(102, 126, 234, 0.1)";
+                textColor = "#667eea";
+            } else if (bmi >= 18.5 && bmi <= 25) {
                 status = "您属于正常";
-            } else if (bmi >= 26 && bmi < 28) {
+                bgColor = "rgba(72, 187, 120, 0.1)";
+                textColor = "#48bb78";
+            } else if (bmi > 25 && bmi < 28) {
                 status = "您属于过重";
+                bgColor = "rgba(246, 190, 0, 0.1)";
+                textColor = "#f6be00";
             } else if (bmi >= 28 && bmi < 32) {
                 status = "您属于肥胖";
+                bgColor = "rgba(239, 68, 68, 0.1)";
+                textColor = "#ef4444";
             } else {
                 status = "您属于严重肥胖";
+                bgColor = "rgba(220, 38, 38, 0.1)";
+                textColor = "#dc2626";
             }
-            // 显示结果
-            document.getElementById("bmi-result").textContent = 
-                `Hello ${name}！你的BMI是 ${bmiRounded}，${status}`;
+            
+            // 显示结果（带动画）
+            resultEl.textContent = `Hello ${name}！你的BMI是 ${bmiRounded}，${status}`;
+            resultEl.style.background = bgColor;
+            resultEl.style.color = textColor;
+            resultEl.classList.add("show");
         }
 
-        // 3. 音乐下载+播放核心逻辑
+        // 3. 音乐下载+播放逻辑
         const AUDIO_URL = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
         document.getElementById('btnDl').addEventListener('click', async () => {
             const a = document.createElement('a');
             a.href = AUDIO_URL;
             a.download = 'mysong.mp3';
             a.click();
+            
+            // 下载按钮动画
+            const btn = document.getElementById('btnDl');
+            btn.textContent = "下载中...";
+            setTimeout(() => {
+                btn.textContent = "下载音乐";
+            }, 1500);
         });
         document.getElementById('player').src = AUDIO_URL;
 
-        // 4. 俄罗斯方块核心逻辑
+        // 4. 俄罗斯方块核心逻辑（手机端适配+网格线+动画）
         const canvas = document.getElementById('tetris-board');
         const ctx = canvas.getContext('2d');
         const gridSize = 30;
@@ -572,7 +867,7 @@
         let gameInterval;
         let isPaused = false;
 
-        // 方块形状定义（7种基础形状）
+        // 方块形状定义
         const shapes = [
             [[1, 1, 1, 1]], // I型
             [[1, 1], [1, 1]], // O型
@@ -604,9 +899,31 @@
             return { shape, color, x, y };
         }
 
+        // 绘制网格线（便于对齐）
+        function drawGrid() {
+            ctx.strokeStyle = '#e0e0e0'; // 浅灰色，不遮挡方块
+            ctx.lineWidth = 0.5; // 细线条，不突兀
+            // 竖线
+            for (let x = 0; x <= canvas.width; x += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            // 横线
+            for (let y = 0; y <= canvas.height; y += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+        }
+
         // 绘制游戏面板
         function drawBoard() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawGrid(); // 先画网格线
+            // 绘制已锁定的方块
             board.forEach((row, y) => {
                 row.forEach((cell, x) => {
                     if (cell) {
@@ -616,15 +933,22 @@
             });
         }
 
-        // 绘制单个方块
+        // 绘制单个方块（带边框高亮）
         function drawCell(x, y, color) {
             ctx.fillStyle = color;
             ctx.fillRect(x * gridSize, y * gridSize, gridSize - 1, gridSize - 1);
             ctx.strokeStyle = '#fff';
             ctx.strokeRect(x * gridSize, y * gridSize, gridSize - 1, gridSize - 1);
+            
+            // 方块hover高亮（可选）
+            if (currentPiece && x >= currentPiece.x && x < currentPiece.x + currentPiece.shape[0].length &&
+                y >= currentPiece.y && y < currentPiece.y + currentPiece.shape.length) {
+                ctx.fillStyle = `${color}80`; // 半透明叠加
+                ctx.fillRect(x * gridSize, y * gridSize, gridSize - 1, gridSize - 1);
+            }
         }
 
-        // 绘制当前下落的方块
+        // 绘制当前下落方块
         function drawPiece() {
             if (!currentPiece) return;
             currentPiece.shape.forEach((row, y) => {
@@ -640,7 +964,7 @@
             });
         }
 
-        // 检查碰撞
+        // 碰撞检测
         function checkCollision(piece, offsetX = 0, offsetY = 0) {
             for (let y = 0; y < piece.shape.length; y++) {
                 for (let x = 0; x < piece.shape[y].length; x++) {
@@ -660,7 +984,7 @@
             return false;
         }
 
-        // 旋转方块
+        // 旋转方块（带动画感）
         function rotatePiece() {
             if (isPaused || !currentPiece) return;
             const rotatedShape = currentPiece.shape[0].map((_, index) =>
@@ -668,7 +992,11 @@
             );
             const newPiece = { ...currentPiece, shape: rotatedShape };
             if (!checkCollision(newPiece)) {
+                // 旋转动画：轻微缩放
+                ctx.save();
+                ctx.scale(1.1, 1.1);
                 currentPiece = newPiece;
+                ctx.restore();
             }
         }
 
@@ -686,46 +1014,87 @@
             });
             clearLines();
             currentPiece = generatePiece();
+            // 新方块生成动画
+            if (currentPiece) {
+                ctx.save();
+                ctx.globalAlpha = 0.5;
+                drawPiece();
+                ctx.restore();
+                setTimeout(() => {
+                    ctx.globalAlpha = 1;
+                }, 100);
+            }
             if (checkCollision(currentPiece)) {
                 gameOver();
             }
         }
 
-        // 消除完整行
+        // 消除完整行（带动画）
         function clearLines() {
             let lines = 0;
-            board = board.filter(row => {
+            const linesToClear = [];
+            board.forEach((row, y) => {
                 if (!row.includes(0)) {
                     lines++;
-                    return false;
+                    linesToClear.push(y);
                 }
-                return true;
             });
-            // 补充空行到顶部
-            while (board.length < rows) {
-                board.unshift(Array(cols).fill(0));
-            }
-            // 更新分数和等级
+            
+            // 消除动画
             if (lines > 0) {
-                linesCleared += lines;
-                score += lines * 100 * level;
-                // 每消除10行升一级
-                if (linesCleared >= level * 10) {
-                    level++;
-                    // 加速游戏
-                    clearInterval(gameInterval);
-                    gameInterval = setInterval(gameLoop, 1000 / level);
-                }
-                document.getElementById('score').textContent = score;
-                document.getElementById('level').textContent = level;
+                linesToClear.forEach(y => {
+                    board[y] = Array(cols).fill('#ff000033'); // 红色闪烁
+                });
+                drawBoard();
+                drawPiece();
+                
+                setTimeout(() => {
+                    // 真正消除行
+                    board = board.filter(row => row.includes(0));
+                    while (board.length < rows) {
+                        board.unshift(Array(cols).fill(0));
+                    }
+                    
+                    // 更新分数和等级
+                    linesCleared += lines;
+                    score += lines * 100 * level;
+                    if (linesCleared >= level * 10) {
+                        level++;
+                        clearInterval(gameInterval);
+                        gameInterval = setInterval(gameLoop, 1000 / level);
+                        // 升级提示动画
+                        const levelEls = [document.getElementById('level-mobile'), document.getElementById('level-pc')];
+                        levelEls.forEach(el => {
+                            el.classList.add('update');
+                            setTimeout(() => el.classList.remove('update'), 500);
+                        });
+                    }
+                    
+                    // 分数更新动画
+                    const scoreEls = [document.getElementById('score-mobile'), document.getElementById('score-pc')];
+                    scoreEls.forEach(el => {
+                        el.textContent = score;
+                        el.classList.add('update');
+                        setTimeout(() => el.classList.remove('update'), 500);
+                    });
+                    document.getElementById('level-mobile').textContent = level;
+                    document.getElementById('level-pc').textContent = level;
+                }, 200);
             }
         }
 
         // 游戏结束
         function gameOver() {
             clearInterval(gameInterval);
-            alert(`游戏结束！你的分数：${score}，等级：${level}`);
-            initGame();
+            // 游戏结束动画
+            ctx.save();
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.restore();
+            setTimeout(() => {
+                alert(`游戏结束！你的分数：${score}，等级：${level}`);
+                initGame();
+            }, 500);
         }
 
         // 游戏循环
@@ -740,7 +1109,7 @@
             drawPiece();
         }
 
-        // 移动方块
+        // 方块控制函数
         function moveLeft() {
             if (isPaused || !currentPiece) return;
             if (!checkCollision(currentPiece, -1, 0)) {
@@ -785,36 +1154,47 @@
             level = 1;
             linesCleared = 0;
             isPaused = false;
-            document.getElementById('score').textContent = score;
-            document.getElementById('level').textContent = level;
-            gameInterval = setInterval(gameLoop, 1000);
-            drawBoard();
-            drawPiece();
+            // 初始化分数显示
+            document.getElementById('score-mobile').textContent = score;
+            document.getElementById('score-pc').textContent = score;
+            document.getElementById('level-mobile').textContent = level;
+            document.getElementById('level-pc').textContent = level;
+            // 游戏开始动画
+            ctx.fillStyle = 'rgba(255,255,255,0.8)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            setTimeout(() => {
+                gameInterval = setInterval(gameLoop, 1000);
+                drawBoard();
+                drawPiece();
+            }, 300);
         }
 
         // 暂停/继续游戏
         function pauseGame() {
             isPaused = !isPaused;
+            if (isPaused) {
+                // 暂停遮罩
+                ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = 'white';
+                ctx.font = '24px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('暂停中', canvas.width/2, canvas.height/2);
+            } else {
+                drawBoard();
+                drawPiece();
+            }
         }
 
         // 键盘控制
         document.addEventListener('keydown', (e) => {
             if (!currentPiece) return;
             switch (e.key) {
-                case 'ArrowLeft':
-                    moveLeft();
-                    break;
-                case 'ArrowRight':
-                    moveRight();
-                    break;
-                case 'ArrowDown':
-                    moveDown();
-                    break;
-                case 'ArrowUp':
-                    rotate();
-                    break;
-                case ' ':
-                    // 空格快速下落
+                case 'ArrowLeft': moveLeft(); break;
+                case 'ArrowRight': moveRight(); break;
+                case 'ArrowDown': moveDown(); break;
+                case 'ArrowUp': rotate(); break;
+                case ' ': // 空格快速下落
                     while (!checkCollision(currentPiece, 0, 1)) {
                         currentPiece.y++;
                     }
@@ -826,8 +1206,20 @@
         });
 
         // 初始化游戏
-        initBoard();
-        drawBoard();
+        function initGame() {
+            initBoard();
+            drawBoard();
+        }
+
+        // 页面加载初始化
+        window.onload = function() {
+            initGame();
+            // 初始动画触发
+            setTimeout(() => {
+                document.querySelector('.section.active').style.opacity = '1';
+                document.querySelector('.section.active').style.transform = 'translateY(0)';
+            }, 100);
+        };
     </script>
 </body>
 </html>
