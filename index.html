@@ -17,9 +17,11 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #333;
             overflow-x: hidden;
+            padding-top: 0;
+            transition: margin-left 0.3s ease;
         }
 
-        /* 导航栏样式 + 动画 */
+        /* 导航栏样式 + 动画 + 折叠功能 */
         .navbar {
             position: fixed;
             left: 0;
@@ -32,7 +34,12 @@
             display: flex;
             flex-direction: column;
             z-index: 100;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, width 0.3s ease;
+        }
+
+        .navbar.collapsed {
+            transform: translateX(-100%);
+            width: 0;
         }
 
         .navbar-logo {
@@ -52,6 +59,58 @@
         .navbar-logo p {
             color: #777;
             font-size: 14px;
+        }
+
+        .nav-toggle {
+            position: absolute;
+            right: -30px;
+            top: 20px;
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 0 5px 5px 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            color: #667eea;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-toggle:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* 折叠后显示的F按钮 */
+        .nav-f-btn {
+            position: fixed;
+            left: 0;
+            top: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 0 5px 5px 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            color: #667eea;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 99;
+            display: none;
+        }
+
+        .nav-f-btn.active {
+            display: block;
+        }
+
+        .nav-f-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.1);
         }
 
         .nav-list {
@@ -105,20 +164,26 @@
             width: 40%;
         }
 
-        /* 主内容区样式 */
+        /* 主内容区样式 - 适配导航栏隐藏 */
         .main-content {
             margin-left: 240px;
-            padding: 50px;
+            padding: 30px 20px;
             min-height: 100vh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             animation: fadeIn 1s ease;
+            transition: margin-left 0.3s ease;
+        }
+
+        body.navbar-hidden .main-content,
+        body.navbar-collapsed .main-content {
+            margin-left: 0;
         }
 
         .section {
             background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
+            padding: 30px;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             width: 100%;
@@ -127,6 +192,7 @@
             animation: slideUp 0.6s ease forwards;
             transform: translateY(30px);
             opacity: 0;
+            margin-bottom: 30px;
         }
 
         .section.active {
@@ -220,7 +286,7 @@
 
         .highlight-card {
             flex: 1;
-            min-width: 200px;
+            min-width: 180px;
             padding: 20px;
             background: rgba(102, 126, 234, 0.05);
             border-radius: 12px;
@@ -280,7 +346,8 @@
 
         .bmi-container input {
             padding: 8px;
-            width: 200px;
+            width: 100%;
+            max-width: 250px;
             font-size: 16px;
             border: 2px solid #e0e0e0;
             border-radius: 5px;
@@ -343,7 +410,7 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            gap: 30px;
+            gap: 20px;
             flex-wrap: wrap;
             width: 100%;
             margin-bottom: 20px;
@@ -374,8 +441,8 @@
         .tetris-sidebar-pc {
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            min-width: 180px;
+            gap: 15px;
+            min-width: 160px;
         }
 
         .tetris-info {
@@ -450,7 +517,7 @@
         .tetris-info-mobile {
             display: none;
             flex-direction: row;
-            gap: 20px;
+            gap: 15px;
             margin-top: 15px;
             width: 100%;
             justify-content: center;
@@ -503,7 +570,7 @@
         /* 科学计算器样式 + 动画 */
         .calc-header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             animation: fadeInDown 0.8s ease;
         }
 
@@ -535,6 +602,9 @@
             overflow-x: auto;
             white-space: nowrap;
             transition: all 0.3s ease;
+            cursor: text;
+            /* 允许输入文字和数字 */
+            readonly: false;
         }
 
         .calc-display:focus {
@@ -613,52 +683,36 @@
             }
         }
 
-        /* 响应式适配 */
+        /* 响应式适配 - 优化手机显示 */
         @media (max-width: 768px) {
             .navbar {
-                width: 100%;
-                height: auto;
-                flex-direction: row;
-                padding: 15px 20px;
+                width: 200px;
+                padding: 20px 0;
             }
 
-            .navbar-logo {
-                margin-bottom: 0;
-                margin-right: auto;
+            .main-content {
+                margin-left: 200px;
+                padding: 20px 15px;
             }
 
             .navbar-logo h2 {
                 font-size: 20px;
             }
 
-            .nav-list {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                gap: 10px;
-            }
-
-            .nav-item {
-                margin: 0;
-            }
-
             .nav-link {
-                padding: 8px 15px;
+                padding: 10px 20px;
                 font-size: 14px;
             }
 
-            .nav-link:hover, .nav-link.active {
-                padding-left: 15px;
-            }
-
-            .main-content {
+            body.navbar-hidden .main-content,
+            body.navbar-collapsed .main-content {
                 margin-left: 0;
-                margin-top: 80px;
-                padding: 20px;
+                padding-top: 20px;
             }
 
             .section {
-                padding: 25px;
+                padding: 20px 15px;
+                margin-bottom: 20px;
             }
 
             .tetris-container {
@@ -681,8 +735,8 @@
 
             /* 手机端游戏界面缩短 */
             #tetris-board, #tetris-board-fun {
-                width: 240px !important;
-                height: 480px !important;
+                width: 220px !important;
+                height: 440px !important;
             }
 
             /* 手机端计算器适配 */
@@ -693,6 +747,53 @@
             .calc-btn {
                 padding: 15px;
                 font-size: 16px;
+            }
+
+            .intro-highlights {
+                gap: 15px;
+            }
+
+            .highlight-card {
+                min-width: 140px;
+                padding: 15px;
+            }
+
+            .highlight-card h3 {
+                font-size: 16px;
+            }
+
+            .highlight-card p {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                transform: translateX(-100%);
+                width: 0;
+            }
+
+            .navbar.collapsed {
+                transform: translateX(0);
+                width: 180px;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .nav-f-btn.active {
+                display: block;
+            }
+
+            .calc-display {
+                font-size: 24px;
+                height: 70px;
+            }
+
+            .calc-btn {
+                padding: 12px;
+                font-size: 14px;
             }
         }
 
@@ -706,7 +807,8 @@
 </head>
 <body>
     <!-- 侧边导航栏 -->
-    <nav class="navbar">
+    <nav class="navbar" id="navbar">
+        <button class="nav-toggle" id="navToggle" onclick="toggleNavbar()">≡</button>
         <div class="navbar-logo">
             <h2>wpf的工具箱</h2>
             <p>小小工具</p>
@@ -730,6 +832,9 @@
         </ul>
     </nav>
 
+    <!-- 折叠后显示的F按钮 -->
+    <button class="nav-f-btn" id="navFBtn" onclick="toggleNavbar()">F</button>
+
     <!-- 主内容区 -->
     <div class="main-content">
         <!-- 自我介绍板块 -->
@@ -743,7 +848,7 @@
                 <p>2. BMI计算器：计算并反馈详细BMI状态；</p>
                 <p>3. 俄罗斯方块：经典怀旧游戏，支持键盘操作，已适配手机；</p>
                 <p>4. 爽版俄罗斯方块：在经典版基础上增加了便捷功能；</p>
-                <p>5. 科学计算器：支持基础运算、对数、指数、三角函数，还有隐藏彩蛋；</p>
+                <p>5. 科学计算器：支持基础运算、对数、指数、三角函数</p>
                 <p>网站采用简洁美观的设计风格，适配电脑和手机等多种设备，希望能给你带来便捷又有趣的使用体验～</p>
             </div>
             <div class="intro-highlights">
@@ -752,7 +857,7 @@
                     <p>国际通用的衡量人体胖瘦程度与健康状况的标准。快来测一测吧！</p>
                 </div>
                 <div class="highlight-card">
-                    <h3>俄罗斯方块~</h3>
+                    <h3>趣味游戏</h3>
                     <p>经典俄罗斯方块和爽版俄罗斯方块，电脑可使用键盘操作！</p>
                 </div>
                 <div class="highlight-card">
@@ -775,11 +880,11 @@
                 </div>
                 <div class="input-box">
                     <label>请输入你的体重(kg)：</label><br>
-                    <input type="number" id="weight" step="0.1" placeholder="例如：90">
+                    <input type="number" id="weight" step="0.1" placeholder="例如：50">
                 </div>
                 <div class="input-box">
                     <label>请输入你的身高(m)：</label><br>
-                    <input type="number" id="height" step="0.01" placeholder="例如：1.75 单位是m">
+                    <input type="number" id="height" step="0.01" placeholder="例如：1.65 单位是m">
                 </div>
                 <button onclick="calculateBMI()">计算BMI</button>
                 <div id="bmi-result"></div>
@@ -824,7 +929,8 @@
                         <button class="tetris-btn-pc" onclick="tetris.pauseGame()">暂停/继续</button>
                     </div>
                     <div class="controls-tip">
-                        支持键盘操作：↑旋转 ←→移动 ↓下移 空格快速下落
+                        支持键盘操作：↑旋转 ←→移动 ↓下移 空格快速下落<br>
+                        游戏中上滑隐藏导航栏，下滑显示
                     </div>
                 </div>
             </div>
@@ -884,7 +990,8 @@
                         <button class="tetris-btn-pc" onclick="tetrisFun.pauseGame()">暂停/继续</button>
                     </div>
                     <div class="controls-tip">
-                        支持键盘操作：↑旋转 ←→移动 ↓下移 空格快速下落
+                        支持键盘操作：↑旋转 ←→移动 ↓下移 空格快速下落<br>
+                        游戏中上滑隐藏导航栏，下滑显示
                     </div>
                 </div>
             </div>
@@ -912,7 +1019,7 @@
                 <h2>科学计算器</h2>
             </div>
             <div class="calc-container">
-                <input type="text" id="calc-display" class="calc-display" readonly placeholder="0">
+                <input type="text" id="calc-display" class="calc-display" placeholder="0" oninput="handleDisplayInput()">
                 <div class="calc-buttons">
                     <button class="calc-btn function" onclick="appendToDisplay('sin(')">sin</button>
                     <button class="calc-btn function" onclick="appendToDisplay('cos(')">cos</button>
@@ -949,13 +1056,17 @@
                     <button class="calc-btn equal" onclick="calculateResult()">=</button>
                 </div>
                 <div class="calc-tip">
-                    支持基础运算、三角函数、对数指数 | 输入特定组合有惊喜彩蛋哦～
+                    支持点击输入/键盘输入（数字+文字）| 输入"奈奈+熊"或"老头+披萨"触发彩蛋
                 </div>
             </div>
         </section>
     </div>
 
     <script>
+        // 全局变量
+        let isTetrisPlaying = false; // 标记是否在玩俄罗斯方块
+        let lastTouchY = 0; // 触摸起始Y坐标
+
         // 1. 板块切换功能
         function switchSection(sectionId) {
             document.querySelectorAll('.section').forEach(section => {
@@ -975,6 +1086,12 @@
                 targetSection.style.opacity = '1';
                 targetSection.style.transform = 'translateY(0)';
             }, 50);
+            
+            // 非俄罗斯方块板块时显示导航栏
+            if (!sectionId.includes('tetris')) {
+                showNavbar();
+                isTetrisPlaying = false;
+            }
         }
 
         // 2. BMI计算器
@@ -1027,7 +1144,7 @@
             resultEl.classList.add("show");
         }
 
-        // 3. 俄罗斯方块核心类（通用逻辑）
+        // 3. 俄罗斯方块核心类（通用逻辑 + 修复清屏bug + 导航栏隐藏功能）
         class TetrisGame {
             constructor(canvasId, scoreElements, levelElements, isFunVersion = false) {
                 this.canvas = document.getElementById(canvasId);
@@ -1305,14 +1422,13 @@
                 }
             }
             
-            // 一键清屏（仅爽版）
+            // 一键清屏（修复bug：确保完全清空所有方块）
             clearScreen() {
-                if (!this.isFunVersion || this.isGameOver) return;
+                if (!this.isFunVersion || this.isGameOver || this.isPaused) return;
                 
-                // 保留分数和等级，清空游戏界面
-                this.initBoard();
-                this.currentPiece = this.generatePiece();
-                this.draw();
+                // 完全清空游戏面板
+                this.initBoard(); // 重置board为全0
+                this.currentPiece = this.generatePiece(); // 重新生成当前方块
                 
                 // 清屏动画效果
                 this.ctx.save();
@@ -1320,7 +1436,9 @@
                 this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
                 this.ctx.restore();
                 
-                setTimeout(() => this.draw(), 100);
+                setTimeout(() => {
+                    this.draw(); // 重新绘制空面板和新方块
+                }, 150);
             }
             
             // 更新分数显示
@@ -1363,8 +1481,9 @@
                 this.gameInterval = setInterval(() => this.gameLoop(), speed);
             }
             
-            // 开始游戏
+            // 开始游戏 - 标记游戏状态
             startGame() {
+                isTetrisPlaying = true;
                 if (this.isGameOver || this.gameInterval) {
                     this.resetGame();
                 }
@@ -1412,11 +1531,13 @@
                 this.draw();
             }
             
-            // 游戏结束
+            // 游戏结束 - 显示导航栏
             gameOver() {
                 clearInterval(this.gameInterval);
                 this.gameInterval = null;
                 this.isGameOver = true;
+                isTetrisPlaying = false;
+                showNavbar(); // 游戏结束显示导航栏
                 
                 this.ctx.save();
                 this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
@@ -1487,7 +1608,7 @@
         tetris.draw();
         tetrisFun.draw();
 
-        // 4. 科学计算器逻辑 + 彩蛋功能
+        // 4. 科学计算器逻辑 + 修复输入bug + 支持文字输入
         let displayValue = '';
         const display = document.getElementById('calc-display');
         
@@ -1500,6 +1621,12 @@
                 displayValue += value;
             }
             display.value = displayValue;
+            checkEasterEgg();
+        }
+        
+        // 处理显示屏输入（直接键盘输入文字/数字）
+        function handleDisplayInput() {
+            displayValue = display.value;
             checkEasterEgg();
         }
         
@@ -1596,14 +1723,23 @@
             setInterval(createHeart, 100);
         }
         
-        // 键盘支持
+        // 键盘支持（增强：支持所有字符输入）
         document.addEventListener('keydown', (e) => {
             const isCalcActive = document.getElementById('calculator').classList.contains('active');
             if (!isCalcActive) return;
             
+            // 避免与系统快捷键冲突
+            if (e.ctrlKey || e.metaKey || e.altKey) return;
+            
             const key = e.key;
-            if (/[0-9+\-*/.]/.test(key)) {
-                appendToDisplay(key);
+            // 数字、运算符直接输入
+            if (/[0-9+\-*/.()a-zA-Z\u4e00-\u9fa5]/.test(key)) {
+                // 避免重复触发
+                if (!e.repeat) {
+                    displayValue += key;
+                    display.value = displayValue;
+                    checkEasterEgg();
+                }
             } else if (key === 'Enter') {
                 calculateResult();
             } else if (key === 'Escape') {
@@ -1612,6 +1748,72 @@
                 deleteLastChar();
             }
         });
+
+        // 5. 导航栏折叠/展开功能
+        function toggleNavbar() {
+            const navbar = document.getElementById('navbar');
+            const navFBtn = document.getElementById('navFBtn');
+            
+            navbar.classList.toggle('collapsed');
+            document.body.classList.toggle('navbar-collapsed');
+            
+            // 控制F按钮显示
+            if (navbar.classList.contains('collapsed')) {
+                navFBtn.classList.add('active');
+            } else {
+                navFBtn.classList.remove('active');
+            }
+        }
+        
+        // 显示导航栏
+        function showNavbar() {
+            const navbar = document.getElementById('navbar');
+            const navFBtn = document.getElementById('navFBtn');
+            
+            navbar.classList.remove('collapsed');
+            document.body.classList.remove('navbar-collapsed', 'navbar-hidden');
+            navFBtn.classList.remove('active');
+        }
+        
+        // 隐藏导航栏
+        function hideNavbar() {
+            const navbar = document.getElementById('navbar');
+            const navFBtn = document.getElementById('navFBtn');
+            
+            navbar.classList.add('collapsed');
+            document.body.classList.add('navbar-hidden');
+            navFBtn.classList.add('active');
+        }
+
+        // 6. 触摸滑动控制导航栏（俄罗斯方块游戏中）
+        document.addEventListener('touchstart', (e) => {
+            if (isTetrisPlaying) {
+                lastTouchY = e.touches[0].clientY;
+            }
+        }, { passive: true });
+        
+        document.addEventListener('touchmove', (e) => {
+            if (isTetrisPlaying) {
+                const currentTouchY = e.touches[0].clientY;
+                const deltaY = currentTouchY - lastTouchY;
+                
+                // 上滑隐藏（滑动距离超过30px）
+                if (deltaY < -30) {
+                    hideNavbar();
+                    lastTouchY = currentTouchY; // 防止重复触发
+                }
+                // 下滑显示（滑动距离超过30px）
+                else if (deltaY > 30) {
+                    showNavbar();
+                    lastTouchY = currentTouchY; // 防止重复触发
+                }
+            }
+        }, { passive: true });
+
+        // 初始化手机端默认折叠导航栏
+        if (window.innerWidth <= 480) {
+            toggleNavbar();
+        }
     </script>
 </body>
 </html>
