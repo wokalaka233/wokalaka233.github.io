@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>wpf的Toolbox</title>
+    <title>wpf的工具箱</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
         * {
@@ -29,7 +29,7 @@
             background: linear-gradient(90deg, #667eea, #764ba2);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 50%;
             font-size: 18px;
             cursor: pointer;
             display: flex;
@@ -38,6 +38,11 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.2);
             z-index: 101;
             transition: all 0.3s ease;
+        }
+        .nav-toggle::before {
+            content: "≡";
+            font-weight: bold;
+            font-size: 22px;
         }
         .nav-toggle:hover {
             transform: scale(1.1);
@@ -63,6 +68,20 @@
             transition: transform 0.3s ease;
             overflow: hidden;
         }
+        .navbar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+        .navbar-header h1 {
+            font-size: 20px;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        .navbar-header p {
+            font-size: 14px;
+            color: #777;
+        }
         @media (max-width: 768px) {
             .navbar {
                 width: 200px;
@@ -71,27 +90,16 @@
             body {
                 padding-left: 0;
             }
-        }
-        .navbar-logo {
-            text-align: center;
-            margin-bottom: 50px;
-            padding: 0 20px;
-        }
-        .navbar-logo h2 {
-            font-size: 24px;
-            color: #667eea;
-            margin-bottom: 8px;
-        }
-        .navbar-logo p {
-            color: #777;
-            font-size: 14px;
+            body.nav-expanded .navbar {
+                transform: translateX(0);
+            }
         }
         .nav-list {
             list-style: none;
             flex: 1;
         }
         .nav-item {
-            margin: 15px 0;
+            margin: 5px 0;
         }
         .nav-link {
             display: block;
@@ -459,7 +467,6 @@
             text-align: right;
             overflow-x: auto;
             outline: none;
-            /* 允许直接输入文字 */
             pointer-events: auto;
             cursor: text;
         }
@@ -501,49 +508,30 @@
             color: #666;
             text-align: center;
         }
+        /* 爱心彩蛋样式 */
         .heart {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: #ff4d6d;
-            transform: rotate(45deg);
-            animation: float 3s ease-in-out forwards;
+            position: fixed;
             pointer-events: none;
             z-index: 9999;
+            animation: heartFly 1.5s ease-out forwards;
         }
-        .heart:before, .heart:after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: #ff4d6d;
-            border-radius: 50%;
-        }
-        .heart:before {
-            top: -10px;
-            left: 0;
-        }
-        .heart:after {
-            top: 0;
-            left: -10px;
-        }
-        @keyframes float {
+        @keyframes heartFly {
             0% {
-                transform: rotate(45deg) translateY(0) scale(1);
                 opacity: 1;
+                transform: scale(1) translate(0, 0);
             }
             100% {
-                transform: rotate(45deg) translateY(-100px) scale(0.5);
                 opacity: 0;
+                transform: scale(calc(0.5 + var(--scale))) translate(calc(var(--x) * 1px), -800px);
             }
         }
     </style>
 </head>
 <body>
-    <button class="nav-toggle" onclick="toggleNavbar()">菜单</button>
+    <button class="nav-toggle" onclick="toggleNavbar()"></button>
     <nav class="navbar">
-        <div class="navbar-logo">
-            <h2>wpf的工具箱</h2>
+        <div class="navbar-header">
+            <h1>wpf的工具箱</h1>
             <p>小小工具</p>
         </div>
         <ul class="nav-list">
@@ -588,7 +576,6 @@
                     <p>经典俄罗斯方块和爽版俄罗斯方块，电脑可使用键盘操作！</p>
                 </div>
                 <div class="highlight-card animate__animated animate__delay-300 animate__slideInUp">
-                    <h3>实用工具</h3>
                     <p>基础计算器，满足日常计算需求，电脑端可直接使用键盘</p>
                 </div>
             </div>
@@ -623,7 +610,7 @@
         </section>
         <section id="tetris" class="section">
             <div class="tetris-header">
-                <h2>经典俄罗斯方块</h2>
+                <h2>俄罗斯方块</h2>
             </div>
             <div class="tetris-container">
                 <div class="tetris-main">
@@ -742,10 +729,9 @@
                 <h2>基础计算器</h2>
             </div>
             <div class="calc-container">
-                <!-- 修改为可编辑输入框 -->
                 <input type="text" class="calc-display" id="calc-display" placeholder="0" spellcheck="false">
                 <div class="calc-buttons">
-                    <button class="calc-btn function" onclick="calc.clear()">AC</button>
+                    <button class="calc-btn function" onclick="calc.append('AC')">AC</button>
                     <button class="calc-btn function" onclick="calc.backspace()">←</button>
                     <button class="calc-btn operator" onclick="calc.append('%')">%</button>
                     <button class="calc-btn operator" onclick="calc.append('/')">÷</button>
@@ -773,14 +759,21 @@
                     <button class="calc-btn equal" onclick="calc.calculate()">=</button>
                 </div>
                 <div class="calc-tip">
-                    支持键盘输入数字/符号                </div>
+                    支持键盘输入数字/符号
+                </div>
             </div>
         </section>
     </div>
 
     <script>
+        // 导航栏切换功能
         function toggleNavbar() {
-            document.body.classList.toggle('nav-collapsed');
+            const body = document.body;
+            if (window.innerWidth <= 768) {
+                body.classList.toggle('nav-expanded');
+            } else {
+                body.classList.toggle('nav-collapsed');
+            }
         }
 
         function switchSection(sectionId) {
@@ -792,9 +785,13 @@
             });
             document.getElementById(sectionId).classList.add('active');
             document.querySelector(`.nav-link[href="#${sectionId}"]`).classList.add('active');
+            
+            if (window.innerWidth <= 768) {
+                document.body.classList.remove('nav-expanded');
+            }
         }
 
-        // BMI计算器（保留历史记录功能）
+        // BMI计算器
         let bmiHistory = JSON.parse(localStorage.getItem('bmiHistory')) || [];
         function renderBMIHistory() {
             const listEl = document.getElementById('bmi-history-list');
@@ -846,7 +843,6 @@
             resultEl.style.backgroundColor = '#f0f9ff';
             resultEl.style.color = color;
 
-            // 保存历史记录
             bmiHistory.unshift({
                 name,
                 bmi,
@@ -857,7 +853,6 @@
             localStorage.setItem('bmiHistory', JSON.stringify(bmiHistory));
             renderBMIHistory();
         }
-        // 页面加载时渲染历史记录
         renderBMIHistory();
 
         // 经典俄罗斯方块
@@ -976,54 +971,62 @@
 
             drawBoard() {
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                // 绘制方格线背景
-                this.ctx.strokeStyle = '#e0e0e0';
-                this.ctx.lineWidth = 1;
-                for (let x = 0; x <= this.canvas.width; x += this.cellSize) {
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(x, 0);
-                    this.ctx.lineTo(x, this.canvas.height);
-                    this.ctx.stroke();
-                }
-                for (let y = 0; y <= this.canvas.height; y += this.cellSize) {
-                    this.ctx.beginPath();
-                    this.ctx.moveTo(0, y);
-                    this.ctx.lineTo(this.canvas.width, y);
-                    this.ctx.stroke();
-                }
-                // 绘制已落下的方块
+                
                 this.board.forEach((row, y) => {
-                    row.forEach((cell, x) => {
-                        if (cell) {
-                            this.ctx.fillStyle = cell;
-                            this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize - 1, this.cellSize - 1);
+                    row.forEach((color, x) => {
+                        if (color) {
+                            this.ctx.fillStyle = color;
+                            this.ctx.fillRect(
+                                x * this.cellSize + 1,
+                                y * this.cellSize + 1,
+                                this.cellSize - 2,
+                                this.cellSize - 2
+                            );
                         }
                     });
                 });
-                // 绘制当前方块
+
                 if (this.currentPiece) {
                     this.ctx.fillStyle = this.currentPiece.color;
                     this.currentPiece.shape.forEach((row, y) => {
                         row.forEach((cell, x) => {
                             if (cell) {
-                                const drawX = (this.currentPiece.x + x) * this.cellSize;
-                                const drawY = (this.currentPiece.y + y) * this.cellSize;
-                                this.ctx.fillRect(drawX, drawY, this.cellSize - 1, this.cellSize - 1);
+                                const drawX = (this.currentPiece.x + x) * this.cellSize + 1;
+                                const drawY = (this.currentPiece.y + y) * this.cellSize + 1;
+                                if (drawY >= 0) {
+                                    this.ctx.fillRect(
+                                        drawX,
+                                        drawY,
+                                        this.cellSize - 2,
+                                        this.cellSize - 2
+                                    );
+                                }
                             }
                         });
                     });
                 }
+
+                if (this.isPaused) {
+                    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                    this.ctx.fillStyle = 'white';
+                    this.ctx.font = '24px Arial';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.fillText('已暂停', this.canvas.width / 2, this.canvas.height / 2);
+                }
             },
 
             moveLeft() {
-                if (this.isPlaying && !this.isPaused && this.isValidMove(-1, 0)) {
+                if (!this.isPlaying || this.isPaused) return;
+                if (this.isValidMove(-1, 0)) {
                     this.currentPiece.x--;
                     this.drawBoard();
                 }
             },
 
             moveRight() {
-                if (this.isPlaying && !this.isPaused && this.isValidMove(1, 0)) {
+                if (!this.isPlaying || this.isPaused) return;
+                if (this.isValidMove(1, 0)) {
                     this.currentPiece.x++;
                     this.drawBoard();
                 }
@@ -1031,13 +1034,21 @@
 
             rotate() {
                 if (!this.isPlaying || this.isPaused) return;
-                const rotated = this.currentPiece.shape[0].map((_, i) => 
-                    this.currentPiece.shape.map(row => row[i]).reverse()
-                );
                 const originalShape = this.currentPiece.shape;
+                const rotated = originalShape[0].map((_, index) => 
+                    originalShape.map(row => row[index]).reverse()
+                );
                 this.currentPiece.shape = rotated;
                 if (!this.isValidMove(0, 0)) {
-                    this.currentPiece.shape = originalShape;
+                    if (this.isValidMove(1, 0)) {
+                        this.currentPiece.x++;
+                    } else if (this.isValidMove(-1, 0)) {
+                        this.currentPiece.x--;
+                    } else if (this.isValidMove(0, 1)) {
+                        this.currentPiece.y++;
+                    } else {
+                        this.currentPiece.shape = originalShape;
+                    }
                 }
                 this.drawBoard();
             },
@@ -1046,10 +1057,11 @@
                 if (!this.isPlaying || this.isPaused) return;
                 if (this.isValidMove(0, 1)) {
                     this.currentPiece.y++;
+                    this.drawBoard();
                 } else {
                     this.mergePiece();
+                    this.drawBoard();
                 }
-                this.drawBoard();
             },
 
             dropToBottom() {
@@ -1062,43 +1074,77 @@
             },
 
             startGame() {
-                if (this.isPlaying) return;
+                if (this.isPlaying) {
+                    if (this.isPaused) {
+                        this.isPaused = false;
+                        this.gameInterval = setInterval(() => this.moveDown(), 1000 - (this.level - 1) * 100);
+                        this.drawBoard();
+                    }
+                    return;
+                }
+                
+                this.resetBoard();
                 this.isPlaying = true;
                 this.isPaused = false;
-                this.resetBoard();
-                this.generatePiece();
                 this.gameInterval = setInterval(() => this.moveDown(), 1000);
                 this.drawBoard();
-                document.body.style.overflow = 'hidden';
             },
 
             pauseGame() {
                 if (!this.isPlaying) return;
+                
                 this.isPaused = !this.isPaused;
-                document.body.style.overflow = this.isPaused ? 'auto' : 'hidden';
+                if (this.isPaused) {
+                    clearInterval(this.gameInterval);
+                } else {
+                    this.gameInterval = setInterval(() => this.moveDown(), 1000 - (this.level - 1) * 100);
+                }
+                this.drawBoard();
             },
 
             gameOver() {
                 clearInterval(this.gameInterval);
                 this.isPlaying = false;
-                alert(`游戏结束！你的分数：${this.score}，等级：${this.level}`);
-                this.resetBoard();
-                this.drawBoard();
-                document.body.style.overflow = 'auto';
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.fillStyle = 'white';
+                this.ctx.font = '24px Arial';
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText('游戏结束', this.canvas.width / 2, this.canvas.height / 2);
+                this.ctx.font = '16px Arial';
+                this.ctx.fillText('点击开始按钮重新游戏', this.canvas.width / 2, this.canvas.height / 2 + 30);
             },
 
             bindKeyEvents() {
                 document.addEventListener('keydown', (e) => {
-                    if (!this.isPlaying || this.isPaused) return;
-                    if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
-                        e.preventDefault();
-                    }
+                    if (!this.isPlaying) return;
+                    
                     switch(e.key) {
-                        case 'ArrowLeft': this.moveLeft(); break;
-                        case 'ArrowRight': this.moveRight(); break;
-                        case 'ArrowUp': this.rotate(); break;
-                        case 'ArrowDown': this.moveDown(); break;
-                        case ' ': this.dropToBottom(); break;
+                        case 'ArrowLeft':
+                            this.moveLeft();
+                            e.preventDefault();
+                            break;
+                        case 'ArrowRight':
+                            this.moveRight();
+                            e.preventDefault();
+                            break;
+                        case 'ArrowUp':
+                            this.rotate();
+                            e.preventDefault();
+                            break;
+                        case 'ArrowDown':
+                            this.moveDown();
+                            e.preventDefault();
+                            break;
+                        case ' ':
+                            this.dropToBottom();
+                            e.preventDefault();
+                            break;
+                        case 'p':
+                        case 'P':
+                            this.pauseGame();
+                            e.preventDefault();
+                            break;
                     }
                 });
             }
@@ -1106,11 +1152,19 @@
 
         // 爽版俄罗斯方块
         const tetrisFun = {
-            ...tetris,
             canvas: document.getElementById('tetris-board-fun'),
             ctx: document.getElementById('tetris-board-fun').getContext('2d'),
-            holdPiece: null,
-            canHold: true,
+            width: 10,
+            height: 20,
+            cellSize: 30,
+            board: [],
+            currentPiece: null,
+            score: 0,
+            level: 1,
+            lines: 0,
+            gameInterval: null,
+            isPlaying: false,
+            isPaused: false,
 
             init() {
                 this.canvas.width = this.width * this.cellSize;
@@ -1119,6 +1173,22 @@
                 this.generatePiece();
                 this.drawBoard();
                 this.bindKeyEvents();
+            },
+
+            resetBoard() {
+                this.board = Array(this.height).fill().map(() => Array(this.width).fill(0));
+                this.score = 0;
+                this.level = 1;
+                this.lines = 0;
+                this.updateScore();
+            },
+
+            // 一键清屏功能 - 只清除方块，保留分数和等级
+            clearScreen() {
+                if (!this.isPlaying) return;
+                
+                this.board = Array(this.height).fill().map(() => Array(this.width).fill(0));
+                this.drawBoard();
             },
 
             generatePiece() {
@@ -1144,164 +1214,473 @@
                 if (!this.isValidMove(0, 0)) {
                     this.gameOver();
                 }
-                this.canHold = true;
             },
 
-            clearScreen() {
-                if (!this.isPlaying || this.isPaused || this.score < 500) return;
-                this.score -= 500;
-                this.board = Array(this.height).fill().map(() => Array(this.width).fill(0));
-                this.updateScore();
-                this.drawBoard();
-            },
-
-            holdPieceFunc() {
-                if (!this.isPlaying || this.isPaused || !this.canHold) return;
-                if (this.holdPiece) {
-                    [this.currentPiece, this.holdPiece] = [this.holdPiece, this.currentPiece];
-                    this.currentPiece.x = Math.floor((this.width - this.currentPiece.shape[0].length) / 2);
-                    this.currentPiece.y = 0;
-                } else {
-                    this.holdPiece = this.currentPiece;
-                    this.generatePiece();
-                }
-                this.canHold = false;
-                this.drawBoard();
-            },
-
-            bindKeyEvents() {
-                document.addEventListener('keydown', (e) => {
-                    if (!this.isPlaying || this.isPaused) return;
-                    if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
-                        e.preventDefault();
-                    }
-                    switch(e.key) {
-                        case 'ArrowLeft': this.moveLeft(); break;
-                        case 'ArrowRight': this.moveRight(); break;
-                        case 'ArrowUp': this.rotate(); break;
-                        case 'ArrowDown': this.moveDown(); break;
-                        case ' ': this.dropToBottom(); break;
-                        case 'Shift': this.holdPieceFunc(); break;
-                    }
+            isValidMove(offsetX, offsetY) {
+                return this.currentPiece.shape.every((row, y) => {
+                    return row.every((cell, x) => {
+                        if (!cell) return true;
+                        const newX = this.currentPiece.x + x + offsetX;
+                        const newY = this.currentPiece.y + y + offsetY;
+                        return newX >= 0 && newX < this.width && newY < this.height && (newY < 0 || !this.board[newY][newX]);
+                    });
                 });
+            },
+
+            mergePiece() {
+                this.currentPiece.shape.forEach((row, y) => {
+                    row.forEach((cell, x) => {
+                        if (cell) {
+                            const newY = this.currentPiece.y + y;
+                            const newX = this.currentPiece.x + x;
+                            if (newY >= 0) this.board[newY][newX] = this.currentPiece.color;
+                        }
+                    });
+                });
+                this.clearLines();
+                this.generatePiece();
+            },
+
+            clearLines() {
+                let linesCleared = 0;
+                this.board = this.board.filter(row => {
+                    if (row.every(cell => cell)) {
+                        linesCleared++;
+                        return false;
+                    }
+                    return true;
+                });
+                while (this.board.length < this.height) {
+                    this.board.unshift(Array(this.width).fill(0));
+                }
+                if (linesCleared > 0) {
+                    this.score += linesCleared * 100 * this.level;
+                    this.lines += linesCleared;
+                    if (this.lines >= this.level * 10) {
+                        this.level++;
+                        clearInterval(this.gameInterval);
+                        this.gameInterval = setInterval(() => this.moveDown(), 1000 - (this.level - 1) * 100);
+                    }
+                    this.updateScore();
+                }
+            },
+
+            updateScore() {
+                document.getElementById('score-pc-fun').textContent = this.score;
+                document.getElementById('score-mobile-fun').textContent = this.score;
+                document.getElementById('level-pc-fun').textContent = this.level;
+                document.getElementById('level-mobile-fun').textContent = this.level;
+            },
+
+            drawBoard() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.board.forEach((row, y) => {
+                    row.forEach((color, x) => {
+                        if (color) {
+                            this.ctx.fillStyle = color;
+                            this.ctx.fillRect(
+                                x * this.cellSize + 1,
+                                y * this.cellSize + 1,
+                                this.cellSize - 2,
+                                this.cellSize - 2
+                            );
+                        }
+                    });
+                });
+
+                if (this.currentPiece) {
+                    this.ctx.fillStyle = this.currentPiece.color;
+                    this.currentPiece.shape.forEach((row, y) => {
+                        row.forEach((cell, x) => {
+                            if (cell) {
+                                const drawX = (this.currentPiece.x + x) * this.cellSize + 1;
+                                const drawY = (this.currentPiece.y + y) * this.cellSize + 1;
+                                if (drawY >= 0) {
+                                    this.ctx.fillRect(
+                                        drawX,
+                                        drawY,
+                                        this.cellSize - 2,
+                                        this.cellSize - 2
+                                    );
+                                }
+                            }
+                        });
+                    });
+                }
+
+                if (this.isPaused) {
+                    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                    this.ctx.fillStyle = 'white';
+                    this.ctx.font = '24px Arial';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.fillText('已暂停', this.canvas.width / 2, this.canvas.height / 2);
+                }
+            },
+
+            moveLeft() {
+                if (!this.isPlaying || this.isPaused) return;
+                if (this.isValidMove(-1, 0)) {
+                    this.currentPiece.x--;
+                    this.drawBoard();
+                }
+            },
+
+            moveRight() {
+                if (!this.isPlaying || this.isPaused) return;
+                if (this.isValidMove(1, 0)) {
+                    this.currentPiece.x++;
+                    this.drawBoard();
+                }
+            },
+
+            rotate() {
+                if (!this.isPlaying || this.isPaused) return;
+                const originalShape = this.currentPiece.shape;
+                const rotated = originalShape[0].map((_, index) => 
+                    originalShape.map(row => row[index]).reverse()
+                );
+                this.currentPiece.shape = rotated;
+                if (!this.isValidMove(0, 0)) {
+                    if (this.isValidMove(1, 0)) {
+                        this.currentPiece.x++;
+                    } else if (this.isValidMove(-1, 0)) {
+                        this.currentPiece.x--;
+                    } else if (this.isValidMove(0, 1)) {
+                        this.currentPiece.y++;
+                    } else {
+                        this.currentPiece.shape = originalShape;
+                    }
+                }
+                this.drawBoard();
+            },
+
+            moveDown() {
+                if (!this.isPlaying || this.isPaused) return;
+                if (this.isValidMove(0, 1)) {
+                    this.currentPiece.y++;
+                    this.drawBoard();
+                } else {
+                    this.mergePiece();
+                    this.drawBoard();
+                }
+            },
+
+            dropToBottom() {
+                if (!this.isPlaying || this.isPaused) return;
+                while (this.isValidMove(0, 1)) {
+                    this.currentPiece.y++;
+                }
+                this.mergePiece();
+                this.drawBoard();
+            },
+
+            startGame() {
+                if (this.isPlaying) {
+                    if (this.isPaused) {
+                        this.isPaused = false;
+                        this.gameInterval = setInterval(() => this.moveDown(), 1000 - (this.level - 1) * 100);
+                        this.drawBoard();
+                    }
+                    return;
+                }
+                
+                this.resetBoard();
+                this.isPlaying = true;
+                this.isPaused = false;
+                this.gameInterval = setInterval(() => this.moveDown(), 800);
+                this.drawBoard();
+            },
+
+            pauseGame() {
+                if (!this.isPlaying) return;
+                
+                this.isPaused = !this.isPaused;
+                if (this.isPaused) {
+                    clearInterval(this.gameInterval);
+                } else {
+                    this.gameInterval = setInterval(() => this.moveDown(), 1000 - (this.level - 1) * 100);
+                }
+                this.drawBoard();
             },
 
             gameOver() {
                 clearInterval(this.gameInterval);
                 this.isPlaying = false;
-                alert(`爽版游戏结束！你的分数：${this.score}，等级：${this.level}`);
-                this.resetBoard();
-                this.holdPiece = null;
-                this.drawBoard();
-                document.body.style.overflow = 'auto';
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                this.ctx.fillStyle = 'white';
+                this.ctx.font = '24px Arial';
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText('游戏结束', this.canvas.width / 2, this.canvas.height / 2);
+                this.ctx.font = '16px Arial';
+                this.ctx.fillText('点击开始按钮重新游戏', this.canvas.width / 2, this.canvas.height / 2 + 30);
+            },
+
+            bindKeyEvents() {
+                document.addEventListener('keydown', (e) => {
+                    if (!this.isPlaying) return;
+                    
+                    switch(e.key) {
+                        case 'ArrowLeft':
+                            this.moveLeft();
+                            e.preventDefault();
+                            break;
+                        case 'ArrowRight':
+                            this.moveRight();
+                            e.preventDefault();
+                            break;
+                        case 'ArrowUp':
+                            this.rotate();
+                            e.preventDefault();
+                            break;
+                        case 'ArrowDown':
+                            this.moveDown();
+                            e.preventDefault();
+                            break;
+                        case ' ':
+                            this.dropToBottom();
+                            e.preventDefault();
+                            break;
+                        case 'p':
+                        case 'P':
+                            this.pauseGame();
+                            e.preventDefault();
+                            break;
+                    }
+                });
             }
         };
 
-        // 基础计算器（修复bug+新增键盘支持+文字彩蛋）
+        // 计算器功能 - 支持输入触发词触发彩蛋
         const calc = {
             display: document.getElementById('calc-display'),
-            // 直接使用输入框内容，不再维护独立变量
+            triggerWords: ['奈奈熊', '披萨老头'], // 触发彩蛋的关键词
+            heartSymbols: ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '💕', '💞', '💓', '💖', '💘', '💝', '🤎', '🤍'],
+            easterEggTriggered: false, // 标记彩蛋是否已触发
+            
             append(value) {
-                // 追加内容到输入框
-                this.display.value += value;
-            },
-            clear() {
-                this.display.value = '';
-            },
-            backspace() {
-                this.display.value = this.display.value.slice(0, -1);
-            },
-            sqrt() {
-                const val = parseFloat(this.display.value);
-                this.display.value = isNaN(val) || val < 0 ? '错误' : Math.sqrt(val).toFixed(6);
-            },
-            square() {
-                const val = parseFloat(this.display.value);
-                this.display.value = isNaN(val) ? '错误' : (val * val).toFixed(6);
-            },
-            calculate() {
-                let expr = this.display.value;
-                // 替换符号（×→*，÷→/）
-                expr = expr.replace(/×/g, '*').replace(/÷/g, '/');
+                // 重置彩蛋触发状态
+                if (value === 'AC') {
+                    this.easterEggTriggered = false;
+                }
                 
-                // 彩蛋触发：检测“奈奈熊”或“老头披萨”
-                if (expr === '奈奈熊' || expr === '老头披萨') {
-                    this.display.value = '520';
-                    this.showHearts();
+                // 处理清除按钮
+                if (value === 'AC') {
+                    this.clear();
                     return;
                 }
-
+                
+                // 如果当前显示为0且输入的是数字，则替换
+                if (this.display.value === '0' && !isNaN(value) && value !== '.') {
+                    this.display.value = value;
+                } else {
+                    this.display.value += value;
+                }
+                this.display.focus();
+                this.scrollDisplay();
+                this.checkEasterEgg(); // 检查是否触发彩蛋
+            },
+            
+            clear() {
+                this.display.value = '0';
+                this.display.focus();
+                this.easterEggTriggered = false; // 清除时重置彩蛋状态
+            },
+            
+            backspace() {
+                if (this.display.value.length > 1) {
+                    this.display.value = this.display.value.slice(0, -1);
+                } else {
+                    this.display.value = '0';
+                }
+                this.display.focus();
+                this.checkEasterEgg(); // 检查是否触发彩蛋
+            },
+            
+            calculate() {
                 try {
-                    // 安全计算表达式
-                    const result = eval(expr);
-                    this.display.value = typeof result === 'number' ? result.toFixed(6) : '错误';
-                } catch (e) {
+                    // 检查是否触发了彩蛋，如果是则直接返回520
+                    if (this.easterEggTriggered) {
+                        this.display.value = '520';
+                        return;
+                    }
+                    
+                    let expression = this.display.value.replace('×', '*').replace('÷', '/');
+                    expression = expression.replace(/(\d+)%/g, '(($1)/100)');
+                    
+                    // 先检查是否有触发词，如果有则先触发彩蛋
+                    this.checkEasterEgg();
+                    
+                    let result = eval(expression);
+                    
+                    if (result.toString().includes('.') && result.toString().split('.')[1].length > 10) {
+                        result = result.toFixed(10);
+                    }
+                    
+                    this.display.value = result;
+                } catch (error) {
                     this.display.value = '错误';
                 }
+                this.display.focus();
+                this.scrollDisplay();
             },
-            // 爱心动画
-            showHearts() {
-                const container = document.createElement('div');
-                container.style.position = 'fixed';
-                container.style.top = '0';
-                container.style.left = '0';
-                container.style.width = '100%';
-                container.style.height = '100%';
-                container.style.pointerEvents = 'none';
-                container.style.zIndex = '9999';
-                document.body.appendChild(container);
-
-                const createHeart = () => {
-                    const heart = document.createElement('div');
-                    heart.classList.add('heart');
-                    heart.style.left = `${Math.random() * 100}%`;
-                    heart.style.animationDelay = `${Math.random() * 2}s`;
-                    heart.style.width = `${10 + Math.random() * 15}px`;
-                    heart.style.height = heart.style.width;
-                    container.appendChild(heart);
-                    setTimeout(() => heart.remove(), 3000);
-                };
-
-                const interval = setInterval(createHeart, 200);
-                setTimeout(() => {
-                    clearInterval(interval);
-                    setTimeout(() => container.remove(), 3000);
-                }, 5000);
+            
+            sqrt() {
+                // 彩蛋触发状态下，开根号也返回520
+                if (this.easterEggTriggered) {
+                    this.display.value = '520';
+                    return;
+                }
+                
+                try {
+                    const value = parseFloat(this.display.value);
+                    if (value >= 0) {
+                        this.display.value = Math.sqrt(value);
+                    } else {
+                        this.display.value = '错误';
+                    }
+                } catch (error) {
+                    this.display.value = '错误';
+                }
+                this.display.focus();
+                this.scrollDisplay();
+            },
+            
+            square() {
+                // 彩蛋触发状态下，平方也返回520
+                if (this.easterEggTriggered) {
+                    this.display.value = '520';
+                    return;
+                }
+                
+                try {
+                    const value = parseFloat(this.display.value);
+                    this.display.value = value * value;
+                } catch (error) {
+                    this.display.value = '错误';
+                }
+                this.display.focus();
+                this.scrollDisplay();
+            },
+            
+            scrollDisplay() {
+                this.display.scrollLeft = this.display.scrollWidth;
+            },
+            
+            // 检查是否触发彩蛋
+            checkEasterEgg() {
+                const inputValue = this.display.value.trim();
+                if (!this.easterEggTriggered && this.triggerWords.some(word => inputValue.includes(word))) {
+                    this.easterEggTriggered = true;
+                    this.startHeartEasterEgg();
+                    // 直接将结果设置为520
+                    setTimeout(() => {
+                        this.display.value = '520';
+                    }, 100);
+                }
+            },
+            
+            // 爱心彩蛋效果 - 满屏、密集、5秒循环
+            startHeartEasterEgg() {
+                const duration = 5000; // 持续5秒
+                const startTime = Date.now();
+                const maxHearts = 200; // 最大同时存在的爱心数量
+                
+                // 清除可能存在的旧爱心
+                document.querySelectorAll('.heart').forEach(heart => heart.remove());
+                
+                // 持续生成爱心
+                function createHeart() {
+                    // 检查是否超过持续时间
+                    if (Date.now() - startTime > duration) return;
+                    
+                    // 控制同时存在的爱心数量
+                    const currentHearts = document.querySelectorAll('.heart').length;
+                    if (currentHearts < maxHearts) {
+                        const heart = document.createElement('div');
+                        heart.classList.add('heart');
+                        
+                        // 随机选择爱心样式
+                        heart.textContent = calc.heartSymbols[Math.floor(Math.random() * calc.heartSymbols.length)];
+                        
+                        // 随机大小 (0.5-2倍)
+                        const size = Math.random() * 1.5 + 0.5;
+                        heart.style.fontSize = `${size}em`;
+                        
+                        // 随机位置（屏幕内）
+                        heart.style.left = `${Math.random() * 100}vw`;
+                        heart.style.top = `${Math.random() * 100}vh`;
+                        
+                        // 随机水平偏移和缩放参数
+                        const xOffset = (Math.random() - 0.5) * 600; // 左右偏移范围
+                        const scale = Math.random() * 1.5 + 0.5; // 缩放范围
+                        heart.style.setProperty('--x', xOffset);
+                        heart.style.setProperty('--scale', scale);
+                        
+                        document.body.appendChild(heart);
+                        
+                        // 动画结束后移除
+                        setTimeout(() => {
+                            if (heart.parentNode) {
+                                heart.remove();
+                            }
+                        }, 1500);
+                    }
+                    
+                    // 继续生成，保持密集效果
+                    requestAnimationFrame(() => {
+                        setTimeout(createHeart, 30); // 每30ms生成一个
+                    });
+                }
+                
+                createHeart();
             }
         };
 
-        // 键盘输入支持（电脑端）
+        // 计算器键盘支持
         document.addEventListener('keydown', (e) => {
-            // 仅在计算器板块激活时响应
-            if (!document.getElementById('calculator').classList.contains('active')) return;
-            
-            const key = e.key;
-            // 数字键
-            if (/[0-9.]/.test(key)) {
-                calc.append(key);
-            }
-            // 符号键
-            else if (['+', '-', '*', '/', '%'].includes(key)) {
-                calc.append(key);
-            }
-            // 回车=等号
-            else if (key === 'Enter') {
-                calc.calculate();
-            }
-            // 删除键
-            else if (key === 'Backspace') {
-                calc.backspace();
-            }
-            // 清除键（ESC）
-            else if (key === 'Escape') {
-                calc.clear();
+            if (document.activeElement === calc.display) {
+                // 数字键
+                if (/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                    calc.append(e.key);
+                }
+                // 运算符
+                switch(e.key) {
+                    case '+':
+                    case '-':
+                    case '*':
+                    case '/':
+                        e.preventDefault();
+                        calc.append(e.key.replace('*', '×').replace('/', '÷'));
+                        break;
+                    case '.':
+                        e.preventDefault();
+                        calc.append('.');
+                        break;
+                    case 'Enter':
+                        e.preventDefault();
+                        calc.calculate();
+                        break;
+                    case 'Escape':
+                        e.preventDefault();
+                        calc.clear();
+                        break;
+                    case 'Backspace':
+                        e.preventDefault();
+                        calc.backspace();
+                        break;
+                }
             }
         });
 
-        // 页面加载初始化
+        // 初始化游戏
         window.onload = () => {
             tetris.init();
             tetrisFun.init();
+            calc.display.focus();
         };
     </script>
 </body>
