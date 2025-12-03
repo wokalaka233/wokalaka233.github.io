@@ -1,53 +1,33 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Deploy Vite+React to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+    branches: [ "main" ]
 
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
-      
-      # 新增：安装Node.js环境（Vite依赖Node）
-      - name: Setup Node.js
+
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x  # 使用适合Vite的Node版本
-      
-      # 新增：安装项目依赖
+          node-version: '18.x'
+          cache: 'npm'
+
       - name: Install dependencies
         run: npm install
-      
-      # 新增：打包Vite项目（生成dist文件夹）
+
       - name: Build Vite project
         run: npm run build
-      
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      
-      # 修改：仅上传打包后的dist文件夹（而非整个仓库）
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './dist'  # 指向Vite打包后的产物目录
-      
+        env:
+          VITE_BASE: '/' # 这里已经改成你的仓库对应的根路径
+
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          cname: wokalaka.top
