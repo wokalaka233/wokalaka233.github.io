@@ -11,20 +11,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 关闭npm缓存，避免找不到package-lock.json报错
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18.x'
-          cache: 'npm'
 
+      # 安装依赖（即使没有锁文件也能正常执行）
       - name: Install dependencies
         run: npm install
 
+      # 构建项目（根路径配置正确，适配你的仓库）
       - name: Build Vite project
         run: npm run build
         env:
-          VITE_BASE: '/' # 这里已经改成你的仓库对应的根路径
+          VITE_BASE: '/'
 
+      # 部署dist目录，保留自定义域名
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
